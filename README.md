@@ -11,7 +11,7 @@ This UserScript is made to remove the annoying "Ad blockers violate YouTube's Te
 
 ## Installation
 
-To install this script, you'll need the Tampermonkey browser extension. If you don't have it, you can [install it from here](https://www.tampermonkey.net/).
+To install this script, you'll need either Tampermonkey (for non-Firefox browsers) or Greasemonkey (for Firefox). If you don't have them, you can install Tampermonkey from [here](https://www.tampermonkey.net/) and Greasemonkey from [here](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/).
 
 ### For Tampermonkey:
 
@@ -28,12 +28,16 @@ To install this script, you'll need the Tampermonkey browser extension. If you d
 3. Paste your script code into the editor.
 4. Click 'File' and then 'Save.'
 
+### Install via Raw:
+
+You can also install this script by clicking [here](https://github.com/HPZ07/RemoveAdBlockYoutube/raw/main/youtube-ad-blocker-message-remover.user.js) to access the raw script file. Confirm the installation when prompted by Tampermonkey or Greasemonkey.
+
 Your script is now installed and active!
 
 ## Features
 
 - Removes the annoying "Ad blockers violate YouTube's Terms of Service"
-- <span style="color:red;">CURRENTLY NOT WORKING ON THE PLAYLIST</span>
+- <font color="red">CURRENTLY NOT WORKING ON THE PLAYLIST</font>
 
 ## Usage
 
