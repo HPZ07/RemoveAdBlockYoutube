@@ -53,5 +53,5 @@ This script is released under the [MIT License](LICENSE).
 
 ## Support
 
-If you encounter any issues or have questions, please [open an issue]().
+If you encounter any issues or have questions, please [open an issue](https://github.com/HPZ07/RemoveAdBlockYoutube/issues).
 
