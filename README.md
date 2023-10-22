@@ -3,7 +3,8 @@
 [![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Compatible-brightgreen.svg)](https://www.tampermonkey.net)
 [![Greasemonkey](https://img.shields.io/badge/Greasemonkey-Compatible-brightgreen.svg)](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
 
-This UserScript is made to remove the annoying "Ad blockers violate YouTube's Terms of Service" message on YouTube. This is just a workaround.
+This UserScript is made to remove the annoying "Ad blockers violate YouTube's Terms of Service" message on YouTube.
+This is just a quick fix, it might not be the perfect solution, but it gets the job done.
 
 <div align="center">
     <img src="/image.png" alt="Preview">
