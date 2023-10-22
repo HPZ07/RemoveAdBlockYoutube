@@ -18,9 +18,8 @@
 
     function addKeyPressListener() {
         frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-
         document.addEventListener('keydown', function (event) {
-            if (event.key === ' ' || event.key === ' ') {
+            if (event.key === ' ') {
                 if (isPlaying) {
                     frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                     isPlaying = false;
@@ -58,8 +57,7 @@
     function getVideoID() {
         const videoURL = window.location.href;
         const videoID = videoURL.match(/v=([A-Za-z0-9_\-]+)/)[1];
-        const embeddedURL = `https://www.youtube.com/embed/${videoID}?enablejsapi=1&autoplay=1`;
-        return embeddedURL;
+        return `https://www.youtube.com/embed/${videoID}?enablejsapi=1&autoplay=1`;
     }
 
     const observer = new MutationObserver(pageChangeCallback);
