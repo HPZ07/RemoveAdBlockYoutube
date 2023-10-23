@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Bypassed Ad-Blocker TOS Violation
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Removes the annoying Ad-blockers TOS violation on Youtube
 // @author       HPZ07
 // @match        https://www.youtube.com/*
@@ -12,21 +12,58 @@
 (function () {
     'use strict';
 
-    let isReplaced = false;
-    let isPlaying = true;
-    let frame, newIframe;
+    function loadVideo() {
+        (function loadYoutubeIFrameApiScript() {
+            const tag = document.createElement("script");
+            tag.src = "https://www.youtube.com/iframe_api";
 
-    function addKeyPressListener() {
-        frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            const firstScriptTag = document.getElementsByTagName("script")[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            tag.onload = setupPlayer;
+        })();
+
+        let player = null;
+
+        function setupPlayer() {
+            window.YT.ready(function() {
+                player = new window.YT.Player("customPlayer", {
+                    videoId: (window.location.href.match(/v=([A-Za-z0-9_\-]+)/) || [])[1],
+                    playerVars: {
+                        'autoplay': 1,
+                        'controls': 1,
+                        'disablekb': 0,
+                        'enablejsapi': 1
+                    },
+                    events: {
+                        onReady: onPlayerReady,
+                    }
+                });
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.getIframe().focus();
+        }
+
+        var currentTime;
         document.addEventListener('keydown', function (event) {
-            if (event.key === ' ') {
-                if (isPlaying) {
-                    frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                    isPlaying = false;
-                } else {
-                    frame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                    isPlaying = true;
-                }
+            switch (event.keyCode) {
+                case 32:
+                    if (player.getPlayerState() == 1) {
+                        player.pauseVideo();
+                    } else {
+                        player.playVideo();
+                    }
+                    break;
+                case 37:
+                    currentTime = player.getCurrentTime();
+                    player.seekTo(currentTime - 5, true);
+                    break;
+                case 39:
+                    currentTime = player.getCurrentTime();
+                    player.seekTo(currentTime + 5, true);
+                    break;
             }
         });
     }
@@ -38,26 +75,16 @@
     }
 
     function replaceViolationWithIframe() {
-        newIframe = document.createElement('iframe');
-        newIframe.className = 'video-stream html5-main-video';
-        newIframe.src = getVideoID();
-        newIframe.setAttribute('id', 'iframe-video-stream');
-        newIframe.setAttribute('allowfullscreen', '');
+        let frame = document.createElement('div');
+        frame.setAttribute('id', 'customPlayer');
+        frame.className = 'video-stream html5-main-video';
 
         const elementToRemove = document.querySelector('ytd-enforcement-message-view-model.style-scope');
 
         if (elementToRemove) {
-            elementToRemove.replaceWith(newIframe);
-            isReplaced = true;
-            frame = newIframe;
-            addKeyPressListener();
+            elementToRemove.replaceWith(frame);
+            loadVideo();
         }
-    }
-
-    function getVideoID() {
-        const videoURL = window.location.href;
-        const videoID = videoURL.match(/v=([A-Za-z0-9_\-]+)/)[1];
-        return `https://www.youtube.com/embed/${videoID}?enablejsapi=1&autoplay=1`;
     }
 
     const observer = new MutationObserver(pageChangeCallback);
