@@ -6,6 +6,8 @@
 // @author       HPZ07
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @updateURL    https://github.com/HPZ07/RemoveAdBlockYoutube/raw/main/youtube-ad-blocker-message-remover.user.js
+// @downloadURL  https://github.com/HPZ07/RemoveAdBlockYoutube/raw/main/youtube-ad-blocker-message-remover.user.js
 // @grant        none
 // ==/UserScript==
 
