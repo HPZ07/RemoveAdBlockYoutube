@@ -12,6 +12,8 @@
 (function () {
     'use strict';
 
+    let player = null;
+
     function loadVideo() {
         (function loadYoutubeIFrameApiScript() {
             const tag = document.createElement("script");
@@ -22,8 +24,6 @@
 
             tag.onload = setupPlayer;
         })();
-
-        let player = null;
 
         function setupPlayer() {
             window.YT.ready(function() {
@@ -39,34 +39,44 @@
                         onReady: onPlayerReady,
                     }
                 });
+
             });
         }
 
         function onPlayerReady(event) {
             event.target.getIframe().focus();
         }
-
-        var currentTime;
-        document.addEventListener('keydown', function (event) {
-            switch (event.keyCode) {
-                case 32:
-                    if (player.getPlayerState() == 1) {
-                        player.pauseVideo();
-                    } else {
-                        player.playVideo();
-                    }
-                    break;
-                case 37:
-                    currentTime = player.getCurrentTime();
-                    player.seekTo(currentTime - 5, true);
-                    break;
-                case 39:
-                    currentTime = player.getCurrentTime();
-                    player.seekTo(currentTime + 5, true);
-                    break;
-            }
-        });
     }
+
+    let currentTime;
+    document.addEventListener('keydown', function (event) {
+        switch (event.keyCode) {
+            case 32:
+                if (player.getPlayerState() == 1) {
+                    player.pauseVideo();
+                } else {
+                    player.playVideo();
+                }
+                event.preventDefault();
+                break;
+            case 37:
+                currentTime = player.getCurrentTime();
+                player.seekTo(currentTime - 5, true);
+                break;
+            case 39:
+                currentTime = player.getCurrentTime();
+                player.seekTo(currentTime + 5, true);
+                break;
+            case 70:
+                var isFullScreen = (document.fullscreenElement || document.webkitFullscreenElement) !== null;
+                if (isFullScreen) {
+                    document.exitFullscreen();
+                } else {
+                    player.getIframe().requestFullscreen();
+                }
+                break;
+        }
+    });
 
     function pageChangeCallback() {
         if (window.location.pathname === "/watch") {
@@ -80,10 +90,14 @@
         frame.className = 'video-stream html5-main-video';
 
         const elementToRemove = document.querySelector('ytd-enforcement-message-view-model.style-scope');
+        const hotkeyManager = document.querySelector('yt-hotkey-manager');
 
         if (elementToRemove) {
             elementToRemove.replaceWith(frame);
             loadVideo();
+        }
+        if(hotkeyManager){
+            hotkeyManager.remove();
         }
     }
 
