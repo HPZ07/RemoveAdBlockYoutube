@@ -54,7 +54,7 @@
         document.addEventListener('keydown', function (event) {
             switch (event.keyCode) {
                 case 32:
-                    if (document.activeElement.id !== "search" && document.activeElement.id !== "contenteditable-root") {
+                    if (!(document.activeElement.id === "search" || document.activeElement.id === "contenteditable-root")) {
                         if (player.getPlayerState() == 1) {
                             player.pauseVideo();
                         } else {
@@ -86,6 +86,12 @@
     function pageChangeCallback() {
         if (window.location.pathname === "/watch") {
             replaceViolationWithIframe();
+        }
+        else{
+            let previousCustomPlayer = document.getElementById('customPlayer');
+            if(previousCustomPlayer){
+                previousCustomPlayer.remove();
+            }
         }
     }
 
