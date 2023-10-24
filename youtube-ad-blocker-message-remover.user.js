@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Bypassed Ad-Blocker TOS Violation
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Removes the annoying Ad-blockers TOS violation on Youtube
 // @author       HPZ07
 // @match        https://www.youtube.com/*
@@ -79,6 +79,16 @@
                         player.getIframe().requestFullscreen();
                     }
                     break;
+            }
+        });
+
+        window.addEventListener('popstate', function(event) {
+            if(!document.getElementById('customPlayer')){
+                let newFrame = document.createElement('div');
+                newFrame.setAttribute('id', 'customPlayer');
+                newFrame.className = 'video-stream html5-main-video';
+                this.document.querySelector('div.yt-playability-error-supported-renderers').appendChild(newFrame);
+                loadVideo();
             }
         });
     }
