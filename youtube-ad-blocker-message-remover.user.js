@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Bypassed Ad-Blocker TOS Violation
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Removes the annoying Ad-blockers TOS violation on Youtube
 // @author       HPZ07
 // @match        https://www.youtube.com/*
@@ -54,12 +54,14 @@
         document.addEventListener('keydown', function (event) {
             switch (event.keyCode) {
                 case 32:
-                    if (player.getPlayerState() == 1) {
-                        player.pauseVideo();
-                    } else {
-                        player.playVideo();
+                    if (document.activeElement.id !== "search" && document.activeElement.id !== "contenteditable-root") {
+                        if (player.getPlayerState() == 1) {
+                            player.pauseVideo();
+                        } else {
+                            player.playVideo();
+                        }
+                        event.preventDefault();
                     }
-                    event.preventDefault();
                     break;
                 case 37:
                     currentTime = player.getCurrentTime();
@@ -94,10 +96,14 @@
 
         const violationMessage = document.querySelector('ytd-enforcement-message-view-model.style-scope');
         const hotkeyManager = document.querySelector('yt-hotkey-manager');
-        const adblockpopup = document.querySelector('tp-yt-paper-dialog');
+        const adblockPopup = document.querySelector('tp-yt-paper-dialog');
+        const mainPlayer = document.querySelector('video.video-stream');
 
-        if(adblockpopup){
-            adblockpopup.remove();
+        if(adblockPopup){
+            adblockPopup.remove();
+            if(mainPlayer){
+                mainPlayer.play();
+            }
             console.log("adblock popup removed");
         }
         if (violationMessage) {
