@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Bypassed Ad-Blocker TOS Violation
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Removes the annoying Ad-blockers TOS violation on Youtube
 // @author       HPZ07
 // @match        https://www.youtube.com/*
@@ -41,7 +41,6 @@
                         onReady: onPlayerReady,
                     }
                 });
-
             });
         }
 
@@ -50,35 +49,37 @@
         }
     }
 
-    let currentTime;
-    document.addEventListener('keydown', function (event) {
-        switch (event.keyCode) {
-            case 32:
-                if (player.getPlayerState() == 1) {
-                    player.pauseVideo();
-                } else {
-                    player.playVideo();
-                }
-                event.preventDefault();
-                break;
-            case 37:
-                currentTime = player.getCurrentTime();
-                player.seekTo(currentTime - 5, true);
-                break;
-            case 39:
-                currentTime = player.getCurrentTime();
-                player.seekTo(currentTime + 5, true);
-                break;
-            case 70:
-                var isFullScreen = (document.fullscreenElement || document.webkitFullscreenElement) !== null;
-                if (isFullScreen) {
-                    document.exitFullscreen();
-                } else {
-                    player.getIframe().requestFullscreen();
-                }
-                break;
-        }
-    });
+    function eventListener(){
+        let currentTime;
+        document.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case 32:
+                    if (player.getPlayerState() == 1) {
+                        player.pauseVideo();
+                    } else {
+                        player.playVideo();
+                    }
+                    event.preventDefault();
+                    break;
+                case 37:
+                    currentTime = player.getCurrentTime();
+                    player.seekTo(currentTime - 5, true);
+                    break;
+                case 39:
+                    currentTime = player.getCurrentTime();
+                    player.seekTo(currentTime + 5, true);
+                    break;
+                case 70:
+                    var isFullScreen = (document.fullscreenElement || document.webkitFullscreenElement) !== null;
+                    if (isFullScreen) {
+                        document.exitFullscreen();
+                    } else {
+                        player.getIframe().requestFullscreen();
+                    }
+                    break;
+            }
+        });
+    }
 
     function pageChangeCallback() {
         if (window.location.pathname === "/watch") {
@@ -91,15 +92,22 @@
         frame.setAttribute('id', 'customPlayer');
         frame.className = 'video-stream html5-main-video';
 
-        const elementToRemove = document.querySelector('ytd-enforcement-message-view-model.style-scope');
+        const violationMessage = document.querySelector('ytd-enforcement-message-view-model.style-scope');
         const hotkeyManager = document.querySelector('yt-hotkey-manager');
+        const adblockpopup = document.querySelector('tp-yt-paper-dialog');
 
-        if (elementToRemove) {
-            elementToRemove.replaceWith(frame);
-            loadVideo();
+        if(adblockpopup){
+            adblockpopup.remove();
+            console.log("adblock popup removed");
         }
-        if(hotkeyManager){
-            hotkeyManager.remove();
+        if (violationMessage) {
+            violationMessage.replaceWith(frame);
+            if(hotkeyManager){
+                hotkeyManager.remove();
+            }
+            console.log("violation message removed");
+            eventListener();
+            loadVideo();
         }
     }
 
